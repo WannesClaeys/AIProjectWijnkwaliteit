@@ -1,30 +1,174 @@
 ---
-title: "WijnKwaliteit"
-author: "Wannes Claeys"
-date: "2022-12-13"
+title: 'AI Project: voorspellen wijnkwaliteit'
+author: "Mano Mares & Wannes Claeys"
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
+library(data.table)
+library(magrittr)
+library(knitr)
+library(readr)
+library(reticulate)
+
+set.seed(42)
+
 knitr::opts_chunk$set(echo = TRUE)
+
+opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-## R Markdown
+# Opdracht
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+In deze opdracht is het de bedoeling om het klassieke Machine Learning proces te doorlopen a.d.h.v. een use case. Vanzelfsprekend hoort bij een model een voorspelling die vervolgens wordt geanalyseerd met echte data om de performantie/accuracy van het model te evalueren.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Use case: 
+Een brouwerij in West-Vlaanderen wil graag de productie van wijnen optimaliseren door meer inzichten te vergaren over de impact van de verschillende wijn-kenmerken op de kwaliteit van de wijnen. Meer bepaald wil de brouwerij de kwaliteit van wijn voorspellen op basis van bepaalde kenmerken. Deze kenmerken zijn ondergebracht in 2 datasets, respectievelijk voor rode wijn en witte wijn. 
 
-```{r cars}
-summary(cars)
+Deze datasets bevatten de fundamentele kenmerken die verantwoordelijk zijn voor het beïnvloeden van de kwaliteit van de wijn. Jullie doel is om, door middel van verschillende Machine Learning technieken en modellen de kwaliteit van de wijn te voorspellen.
+
+Opmerking: als je in de voorbeeldcode 3 puntjes (...) tegenkomt, dan is het de bedoeling om de code aan te vullen.
+
+# Runnen project
+
+-> Welke technologieën gebruik je? (Python, R, Vs Code, R Studio)<br />
+-> Hoe kan ik het project zonder execution errors runnen?
+
+# Data-Exploratie
+
+```{r}
+data_winequality_white <- read.csv("Data - winequality-white.csv", header=TRUE, sep=";") %>% setDT
+head(data_winequality_white)
+
+summary(data_winequality_white)
+
+
+```
+-> Doe nu hetzelfde voor de andere dataset. Merk op dat je met beide datasets zal moeten werken. M.a.w.: data-exploratie, data-manipulatie, trainen en testen op beide datasets.
+-> Overloop alle variabelen en leg ze uit aan de hand van 1 of 2 zinnen per variabele. Geef iets weer of analyseer indien er belangrijke punten zijn die je wil vermelden.
+-> Enzovoort
+```{r}
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+```{r}
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Analyseerde afhankelijkheid tussen de variabelen door middel van een correlatie matrix en een correlatietabel.
+
+```{r}
+
+
+```
+
+-> Wat zijn de conclusies uit je bovenstaand matrix en/of tabel?
+
+
+## Conclusie Data-Exploratie
+
+-> Geef een algemene conclusie over je data-exploratie, waarin je reflecteert over de inzichten die je hebt opgedaan, opmerkelijkheden benadrukt en de volgende stappen in het proces beschrijft.<br />
+-> Leg ook uit of je iets van data dient te 'manipuleren', (lees: data-manipulatie). Het kan bijvoorbeeld zijn dat er een variabele is met corrupted data of dergelijke. Daarnaast is het belangrijk dat de datatypes van de dataset compatibel zijn met de gebruikte ML algoritmen. Om dit te weten moet je even nadenken over welke 3 ML algoritmen je wil gebruiken voor je voorspelling.
+
+# Data-Manipulatie
+
+
+## Conclusie Data-Manipulatie
+
+
+
+# Leeralgoritmen/Neurale Netwerken
+
+-> Merk op: je kan dit probleem aanpakken als een regressieprobleem, maar ook als een classificatieprobleem. Let het verschil uit in de context van deze probleemstelling. Leg ook uit wat volgens jou de beste aanpak is.<br />
+-> Selecteer nu 3 algoritmen: 2 algoritmen voor wat volgens jou de beste aanpak is, 1 algoritme voor de andere aanpak. <br /><br />
+
+-> Start hieronder met het opstellen van jullie modellen en de voorspellingen voor elk van de 3 algoritmen. M.a.w.: aangezien jullie 3 algoritmen zullen gebruiken, zullen jullie 3 keer een model gebruiken en teven 3 keer voorspellen.<br />
+
+-> Analyseer de resultaten van elk algoritme <br />
+-> Concludeer over de de probleemstelling, het proces en de resultaten van elk model. Welk model past volgens jou het beste bij deze probleemstelling?
+
+
+### Algoritme 1: LM() algoritme
+
+**Witte wijn:**
+
+De data wordt gesplitst in een trainingsset en testset. Vervolgens wordt het model gemaakt met de trainingsset.
+
+```{r}
+dt_white = sort(sample(nrow(data_winequality_white), nrow(data_winequality_white)*.8))
+traindata_white <- data_winequality_white[dt_white,]
+testdata_white <- data_winequality_white[-dt_white,]
+
+model_white <- lm(quality ~., data = traindata_white)
+```
+
+Nu het model gemaakt is, kan met de testset voorspellingen worden gemaakt. Het verschil tussen de werkelijke kwaliteit en de voorspelde kwaliteit wordt ook weergegeven.
+
+```{r}
+prediction_quality_white <- predict(model_white, newdata = testdata_white)
+
+result_white <- data.frame(testdata_white$quality, prediction_quality_white, margin_of_error = testdata_white$quality - prediction_quality_white)
+
+head(result_white)
+```
+Om de kwaliteit van het model te evalueren, wordt de mean absolute error gebruikt. Hoe kleiner de error, hoe beter het model. 
+
+```{r}
+mae <- function(x, y) {mean(abs(y - x))}
+```
+
+```{r}
+mae_white <- mae(prediction_quality_white, testdata_white$quality)
+```
+
+De mean absolute error voor witte wijn is `r mae_white`. Dit wil zeggen dat de voorspelde kwaliteit gemiddeld met `r round(mae_white, 2)` afwijkt van de werkelijke kwaliteit.
+
+
+
+**Rode wijn:**
+
+-> Voer nu hetzelfde proces uit voor de rode wijn
+
+```{r}
+
+```
+
+
+### Algoritme 2: ...
+
+-> Nu is het de bedoeling om na te denken over een 2de algoritme en daar een ML model rond te bouwen, te trainen, te testen en met voorspellingen te komen waarover je vervolgens kan reflecteren.<br />
+-> MERK OP DAT BOVENSTAANDE VOORBEELDCODE ERG BEPERKT IS. DE CODE IS LOUTER ILLUSTRATIEF, MAAR GEEFT NIET WEER HOE BEKNOPT JULLIE TE WERK MOETEN GAAN. HET IS DE BEDOELING DAT JULLIE DUIDELIJKE CODE SCHRIJVEN, EN DEZE DOCUMENTEREN DOOR MIDDEL VAN UITLEG IN DIT DOCUMENT!
+
+
+
+**Witte wijn:**
+
+
+
+**Rode wijn:**
+
+
+
+
+### Algoritme 3: ...
+
+-> Nu is het de bedoeling om na te denken over een 3de algoritme en daar een ML model rond te bouwen, te trainen, te testen en met voorspellingen te komen waarover je vervolgens kan reflecteren
+
+
+**Witte wijn:**
+
+
+
+**Rode wijn:**
+
+
+
+### Conclusie
+
+
+
+### Bronnen

@@ -1,3 +1,10 @@
+# Result file
+WijnKwaliteit.html
+
+# Data files
+Data - winequality-red.csv
+Data - winequality-white.csv
+
 # History files
 .Rhistory
 .Rapp.history
