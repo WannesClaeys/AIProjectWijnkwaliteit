@@ -11,6 +11,7 @@ library(magrittr)
 library(knitr)
 library(readr)
 library(reticulate)
+library(corrplot)
 
 set.seed(42)
 
@@ -41,88 +42,202 @@ Opmerking: als je in de voorbeeldcode 3 puntjes (...) tegenkomt, dan is het de b
 data_winequality_white <- read.csv("Data - winequality-white.csv", header=TRUE, sep=";") %>% setDT
 head(data_winequality_white)
 
-summary(data_winequality_white)
-
 ```
 
 ```{r}
 qualityCountWhite <- table(data_winequality_white$quality)
 barplot(qualityCountWhite, main="Qualtity of white wine",
    xlab="Quality")
+summary(data_winequality_white$quality)
 ```
+
 ```{r}
-fixedAcidity <- table(data_winequality_white$fixed.acidity)
-d <- density(fixedAcidity)
+fixedAcidityWhite <- table(data_winequality_white$fixed.acidity)
+d <- density(fixedAcidityWhite)
 plot(d, main="Fixed acidity in the wine")
+summary(data_winequality_white$fixed.acidity)
 
 ```
+
 ```{r}
-volatileAcidity <- table(data_winequality_white$volatile.acidity)
-d <- density(volatileAcidity)
+volatileAcidityWhite <- table(data_winequality_white$volatile.acidity)
+d <- density(volatileAcidityWhite)
 plot(d, main="Volatile acidity in the wine")
+summary(data_winequality_white$volatile.acidity)
 
 ```
 
 ```{r}
-citricAcid <- table(data_winequality_white$citric.acid)
-d <- density(citricAcid)
+citricAcidWhite <- table(data_winequality_white$citric.acid)
+d <- density(citricAcidWhite)
 plot(d, main="Citric acid in the wine")
+summary(data_winequality_white$citric.acid)
 ```
 ```{r}
-residualSugar <- table(data_winequality_white$residual.sugar)
-d <- density(residualSugar)
+residualSugarWhite <- table(data_winequality_white$residual.sugar)
+d <- density(residualSugarWhite)
 plot(d, main="Residual sugar in the wine")
-```
-```{r}
-chlorides <- table(data_winequality_white$chlorides)
-d <- density(chlorides)
-plot(d, main="Chlorides in the wine")
-```
-```{r}
-freeSulfurDioxide <- table(data_winequality_white$free.sulfur.dioxide)
-d <- density(freeSulfurDioxide)
-plot(d, main="Free sulfur dioxide in the wine")
+summary(data_winequality_white$residual.sugar)
 ```
 
 ```{r}
-density <- table(data_winequality_white$density)
-d <- density(density)
+chloridesWhite <- table(data_winequality_white$chlorides)
+d <- density(chloridesWhite)
+plot(d, main="Chlorides in the wine")
+summary(data_winequality_white$chlorides)
+```
+
+```{r}
+freeSulfurDioxideWhite <- table(data_winequality_white$free.sulfur.dioxide)
+d <- density(freeSulfurDioxideWhite)
+plot(d, main="Free sulfur dioxide in the wine")
+summary(data_winequality_white$free.sulfur.dioxide)
+```
+
+```{r}
+totalSulfurDioxideWhite <- table(data_winequality_white$total.sulfur.dioxide)
+
+d <- density(totalSulfurDioxideWhite)
+plot(d, main="Total sulfur dioxide in the wine")
+summary(data_winequality_white$total.sulfur.dioxide)
+```
+
+```{r}
+densityWhite <- table(data_winequality_white$density)
+d <- density(densityWhite)
 plot(d, main="Density of the wine")
+summary(data_winequality_white$density)
+```
+
+```{r}
+phWhite <- table(data_winequality_white$pH)
+d <- density(phWhite)
+plot(d, main="PH vlaue of the wine")
+summary(data_winequality_white$pH)
+```
+
+```{r}
+sulphatesWhite <- table(data_winequality_white$sulphates)
+d <- density(sulphatesWhite)
+plot(d, main="Sulphate in the wine")
+summary(data_winequality_white$sulphates)
 ```
 ```{r}
-totalSulfurDioxide <- table(data_winequality_white$total.sulfur.dioxide)
-d <- density(totalSulfurDioxide)
-plot(d, main="Total fulfur dioxide in the wine")
+alcoholWhite <- table(data_winequality_white$alcohol)
+d <- density(alcoholWhite)
+plot(d, main="Alcohol percentage of the wine")
+summary(data_winequality_white$alcohol)
 ```
 
 -> Doe nu hetzelfde voor de andere dataset. Merk op dat je met beide datasets zal moeten werken. M.a.w.: data-exploratie, data-manipulatie, trainen en testen op beide datasets.
 -> Overloop alle variabelen en leg ze uit aan de hand van 1 of 2 zinnen per variabele. Geef iets weer of analyseer indien er belangrijke punten zijn die je wil vermelden.
 -> Enzovoort
+
 ```{r}
 data_winequality_red <- read.csv("Data - winequality-red.csv", header=TRUE, sep=";") %>% setDT
 head(data_winequality_red)
 
-summary(data_winequality_red)
-
-
 ```
-
 
 ```{r}
 qualityCountRed <- table(data_winequality_red$quality)
 barplot(qualityCountRed, main="Qualtity of red wine",
    xlab="Quality")
+summary(data_winequality_red$quality)
+```
 
+```{r}
+fixedAcidityRed <- table(data_winequality_red$fixed.acidity)
+d <- density(fixedAcidityRed)
+plot(d, main="Fixed acidity in the red wine")
+summary(data_winequality_red$fixed.acidity)
+
+```
+
+```{r}
+volatileAcidityRed <- table(data_winequality_red$volatile.acidity)
+d <- density(volatileAcidityRed)
+plot(d, main="Volatile acidity in the red wine")
+summary(data_winequality_red$volatile.acidity)
+
+```
+
+```{r}
+citricAcidRed <- table(data_winequality_red$citric.acid)
+d <- density(citricAcidRed)
+plot(d, main="Citric acid in the red wine")
+summary(data_winequality_red$citric.acid)
+```
+```{r}
+residualSugarRed <- table(data_winequality_red$residual.sugar)
+d <- density(residualSugarRed)
+plot(d, main="Residual sugar in the red wine")
+summary(data_winequality_red$residual.sugar)
+```
+
+```{r}
+chloridesRed <- table(data_winequality_red$chlorides)
+d <- density(chloridesRed)
+plot(d, main="Chlorides in the red wine")
+summary(data_winequality_red$chlorides)
+```
+
+```{r}
+freeSulfurDioxideRed <- table(data_winequality_red$free.sulfur.dioxide)
+d <- density(freeSulfurDioxideRed)
+plot(d, main="Free sulfur dioxide in the red wine")
+summary(data_winequality_red$free.sulfur.dioxide)
+```
+
+```{r}
+totalSulfurDioxideRed <- table(data_winequality_red$total.sulfur.dioxide)
+
+d <- density(totalSulfurDioxideRed)
+plot(d, main="Total sulfur dioxide in the red wine")
+summary(data_winequality_red$total.sulfur.dioxide)
+```
+
+```{r}
+densityRed <- table(data_winequality_red$density)
+d <- density(densityRed)
+plot(d, main="Density of the red wines")
+summary(data_winequality_red$density)
+```
+
+```{r}
+phRed <- table(data_winequality_red$pH)
+d <- density(phRed)
+plot(d, main="PH vlaue of the red wines")
+summary(data_winequality_red$pH)
+```
+
+```{r}
+sulphatesRed <- table(data_winequality_red$sulphates)
+d <- density(sulphatesWhite)
+plot(d, main="Sulphate in the wine")
+summary(data_winequality_red$sulphates)
+```
+```{r}
+alcoholRed <- table(data_winequality_red$alcohol)
+d <- density(alcoholRed)
+plot(d, main="Alcohol percentage of the wine")
+summary(data_winequality_red$alcohol)
 ```
 
 
 Analyseerde afhankelijkheid tussen de variabelen door middel van een correlatie matrix en een correlatietabel.
 
 ```{r}
-
-
+red_wine.cor = cor(data_winequality_red)
+round(red_wine.cor, 2)
+corrplot(red_wine.cor)
 ```
 
+```{r}
+white_wine.cor = cor(data_winequality_white)
+round(white_wine.cor, 2)
+corrplot(white_wine.cor)
+```
 -> Wat zijn de conclusies uit je bovenstaand matrix en/of tabel?
 
 
@@ -188,11 +303,36 @@ De mean absolute error voor witte wijn is `r mae_white`. Dit wil zeggen dat de v
 
 **Rode wijn:**
 
--> Voer nu hetzelfde proces uit voor de rode wijn
+De data wordt gesplitst in een trainingsset en testset. Vervolgens wordt het model gemaakt met de trainingsset.
 
 ```{r}
+dt_red = sort(sample(nrow(data_winequality_red), nrow(data_winequality_red)*.8))
+traindata_red <- data_winequality_red[dt_red,]
+testdata_red <- data_winequality_red[-dt_red,]
 
+model_red <- lm(quality ~., data = traindata_red)
 ```
+
+Nu het model gemaakt is, kan met de testset voorspellingen worden gemaakt. Het verschil tussen de werkelijke kwaliteit en de voorspelde kwaliteit wordt ook weergegeven.
+
+```{r}
+prediction_quality_red <- predict(model_red, newdata = testdata_red)
+
+result_red <- data.frame(testdata_red$quality, prediction_quality_red, margin_of_error = testdata_red$quality - prediction_quality_red)
+
+head(result_red)
+```
+Om de kwaliteit van het model te evalueren, wordt de mean absolute error gebruikt. Hoe kleiner de error, hoe beter het model. 
+
+```{r}
+mae <- function(x, y) {mean(abs(y - x))}
+```
+
+```{r}
+mae_red <- mae(prediction_quality_red, testdata_red$quality)
+```
+
+De mean absolute error voor rode wijn is `r mae_red`. Dit wil zeggen dat de voorspelde kwaliteit gemiddeld met `r round(mae_red, 2)` afwijkt van de werkelijke kwaliteit.
 
 
 ### Algoritme 2: ...
