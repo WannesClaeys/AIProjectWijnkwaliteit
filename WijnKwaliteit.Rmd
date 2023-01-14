@@ -11,6 +11,7 @@ library(magrittr)
 library(knitr)
 library(readr)
 library(reticulate)
+library(MASS)
 library(corrplot)
 
 set.seed(42)
@@ -343,13 +344,49 @@ De mean absolute error voor rode wijn is `r mae_red`. Dit wil zeggen dat de voor
 
 
 **Witte wijn:**
+We kunnen opnieuw gebruik maken van dezelfde trainingsdataset en testdataset. Dit komt omdat we hier geen veranderingen op hebben uitgevoerd. Het eerste algoritme dat we gaan gebruiken om een model te maken is lda (Linear discriminant analysis). Zoals eerder aangegeven zullen we eerst onze dataset splitsen in een testdataset en een trainingsdataset
 
+```{r}
+head(dt_white)
+dt_white_lda = sort(sample(nrow(data_winequality_white), nrow(data_winequality_white)*.8))
+traindata_white_lda <- data_winequality_white[dt_white_lda,]
+testdata_white_lda <- data_winequality_white[-dt_white_lda,]
+head(traindata_white_lda$quality)
+model_white_lda <- lda(quality ~., data = traindata_white_lda)
+```
 
+We hebben nu een model klaarstaan, dit kunnen we vervolgens gebruiken om een voorspelling te maken op de wijn. 
+
+```{r}
+prediction_quality_white_lda <- predict(model_white_lda, newdata = testdata_white_lda)
+result_white_lda <- data.frame(testdata_white_lda$quality, prediction_quality_white_lda$class)
+head(prediction_quality_white_lda$class, margin_of_error = testdata_white_lda$quality - prediction_quality_white_lda$class)
+head(result_white_lda)
+```
+
+De functie predict kan aan de hand van het model een voorspelling maken op, in dit geval de wijnkwaliteit. Anders dan bij het 'lm' algoritme is dat er hier ronde getallen komen uit de prediction. Dit komt volgens mij omdat het 'lda' algoritme gebruik maakt van distincte categorieën. Uiteraard zijn de waarden die uit de voorspelling komen minder precies, maar blijft na het vergelijken met de testdata nog vrij accuraat waardoor dit algoritme zeker bruikbaar is. Het 'lda' lijkt ons wel echter niet de perfecte oplossing om de wijnkwaliteit te voorspellen omdat in dit geval mogelijks te veel zal worden afgerond waardoor je een iets minder accuraat antwoord krijgt. 
 
 **Rode wijn:**
 
+We kunnen vervolgens hetzelfde uitvoeren bij de rode wijn
 
+```{r}
+dt_red_lda = sort(sample(nrow(data_winequality_red), nrow(data_winequality_red)*.8))
+traindata_red_lda <- data_winequality_red[dt_red_lda,]
+testdata_red_lda <- data_winequality_red[-dt_red_lda,]
+head(traindata_red_lda$quality)
+model_red_lda <- lda(quality ~., data = traindata_red_lda)
+plot(model_red_lda)
+```
 
+Het model staat nu klaar voor de rode wijn. Nu zullen we met dit model de voorspelling kunnen maken met de predict-functie.
+
+```{r}
+prediction_quality_red_lda <- predict(model_red_lda, newdata = testdata_red_lda)
+result_red_lda <- data.frame(testdata_red_lda$quality, prediction_quality_red_lda$class)
+head(prediction_quality_white_lda$class, margin_of_error = testdata_red_lda$quality - prediction_quality_red_lda$class)
+head(result_red_lda)
+```
 
 ### Algoritme 3: ...
 
