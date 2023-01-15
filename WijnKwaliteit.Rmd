@@ -13,6 +13,7 @@ library(readr)
 library(reticulate)
 library(MASS)
 library(corrplot)
+library(randomForest)
 
 set.seed(42)
 
@@ -344,7 +345,7 @@ De mean absolute error voor rode wijn is `r mae_red`. Dit wil zeggen dat de voor
 
 
 **Witte wijn:**
-We kunnen opnieuw gebruik maken van dezelfde trainingsdataset en testdataset. Dit komt omdat we hier geen veranderingen op hebben uitgevoerd. Het eerste algoritme dat we gaan gebruiken om een model te maken is lda (Linear discriminant analysis). Zoals eerder aangegeven zullen we eerst onze dataset splitsen in een testdataset en een trainingsdataset
+We kunnen opnieuw gebruik maken van dezelfde trainingsdataset en testdataset. Dit komt omdat we hier geen veranderingen op hebben uitgevoerd. Het eerste algoritme dat we gaan gebruiken om een model te maken is lda (Linear discriminant analysis). Zoals eerder aangegeven zullen we eerst onze dataset splitsen in een testdataset en een trainingsdataset. 80% stoppen we in de trainingsdata en 20% zullen we als testdata gebruiken. 
 
 ```{r}
 head(dt_white)
@@ -376,7 +377,6 @@ traindata_red_lda <- data_winequality_red[dt_red_lda,]
 testdata_red_lda <- data_winequality_red[-dt_red_lda,]
 head(traindata_red_lda$quality)
 model_red_lda <- lda(quality ~., data = traindata_red_lda)
-plot(model_red_lda)
 ```
 
 Het model staat nu klaar voor de rode wijn. Nu zullen we met dit model de voorspelling kunnen maken met de predict-functie.
@@ -385,7 +385,7 @@ Het model staat nu klaar voor de rode wijn. Nu zullen we met dit model de voorsp
 prediction_quality_red_lda <- predict(model_red_lda, newdata = testdata_red_lda)
 result_red_lda <- data.frame(testdata_red_lda$quality, prediction_quality_red_lda$class)
 head(prediction_quality_white_lda$class, margin_of_error = testdata_red_lda$quality - prediction_quality_red_lda$class)
-head(result_red_lda)
+summary(prediction_quality_red_lda$class)
 ```
 
 ### Algoritme 3: ...
@@ -395,11 +395,44 @@ head(result_red_lda)
 
 **Witte wijn:**
 
+De tabel moet nu dus opnieuw opgesplitst worden in een testdataset en en traingsdataset.
 
+```{r}
+dt_white_rf = sort(sample(nrow(data_winequality_white), nrow(data_winequality_white)*.8))
+traindata_white_rf = data_winequality_white[dt_white_rf,]
+testdata_white_rf = data_winequality_white[-dt_white_rf,]
+```
 
+Vervolgens zal het model moeten worden aangemaakt. 
+
+```{r}
+model_white_rf <- randomForest(quality ~., data= traindata_white_rf)
+summary(model_white_rf$quality)
+prediction_quality_white_rf <- predict(model_white_rf)
+summary(prediction_quality_white_rf)
+head(prediction_quality_white_rf, margin_of_error = testdata_white_nrf$quality)
+```
 **Rode wijn:**
 
+```{r}
+dt_red_rf = sort(sample(nrow(data_winequality_red), nrow(data_winequality_red)*.8))
+traindata_red_rf = data_winequality_red[dt_red_rf,]
+testdata_red_rf = data_winequality_red[-dt_red_rf,]
+```
 
+
+
+```{r}
+model_red_rf <- randomForest(quality~., data = traindata_red_rf)
+```
+
+Vervolgens kunnen we met het model een voorspelling maken aan de hand van de predict-functie.
+
+```{r}
+prediction_quality_red_rf <- predict(model_red_rf)
+summary(prediction_quality_red_rf)
+head(prediction_quality_red_rf, margin_of_error = testdata_red_rf$quality - prediction_quality_red_rf)
+```
 
 ### Conclusie
 
