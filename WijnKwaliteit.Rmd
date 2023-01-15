@@ -35,18 +35,25 @@ Opmerking: als je in de voorbeeldcode 3 puntjes (...) tegenkomt, dan is het de b
 
 # Runnen project
 
--> Welke technologieën gebruik je? (Python, R, Vs Code, R Studio)<br />
--> Hoe kan ik het project zonder execution errors runnen?
+In dit project maken we gebruik van de programeer-taal "r". Binnen deze taal maken we gebruik van verschillende packages. Deze worden aangeroepen hierboven. Om deze packages succesvol te kunnen importeren, moeten deze geïnstalleerd worden. Dit kan via de console, waar men gebruik maakt van het commando "install.packages()". De packages die geïnstaleerd moeten worden zijn de volgende: data.table, magrittr, knitr, readr, reticulate, MASS, corrplot en randomForest.
 
 # Data-Exploratie
 
+Hier zullen we de gebruikte datasets bekijken, en beschrijven. Dit doen we om inzicht te krijgen in de data, voor we er algoritmen op loslaten.
+
 ## Wite wijn
+
+In eerste instantie kijken we naar de data die beschikbaar is over de witten wijnen.
 
 ```{r}
 data_winequality_white <- read.csv("Data - winequality-white.csv", header=TRUE, sep=";") %>% setDT
 head(data_winequality_white)
 
 ```
+
+Om te beginnen kijken we naar de kwaliteit van de witte wijnen. Dit doen we omdat we deze informatie willen kunnen leren voorspellen.
+
+We zien dat over het algemeen de meeste wijnen vrij gemiddeld scoren. Ook valt op dat er geen wijnen zijn die lager als 3, of hoger als 9 scoren. Er zijn dus geen perfecte of extreem slechte scores beschikbaar. Dit kan later een probleem vormen bij het trainen van het algoritme. 
 
 ```{r}
 qualityCountWhite <- table(data_winequality_white$quality)
@@ -55,6 +62,8 @@ barplot(qualityCountWhite, main="Qualtity of white wine",
 summary(data_winequality_white$quality)
 ```
 
+Nu kijken we naar het vaste zuur in de wijnen. Hierzien we dat deze relatief breed verspreid is. We merken op dat er twee pieken zijn. De eerste aan het begin, de tweede bij de hogere waarden.
+
 ```{r}
 fixedAcidityWhite <- table(data_winequality_white$fixed.acidity)
 d <- density(fixedAcidityWhite)
@@ -62,27 +71,31 @@ plot(d, main="Fixed acidity in the wine")
 summary(data_winequality_white$fixed.acidity)
 
 ```
+Als volgende kijken we naar het vluchtige zuur. Hier zien we 1 duidelijke piek aan het begin, me wat meer willekeurige data bij de hoge waarden.
 
 ```{r}
 volatileAcidityWhite <- table(data_winequality_white$volatile.acidity)
-d <- density(volatileAcidityWhite)
-plot(d, main="Volatile acidity in the wine")
+plot(density(volatileAcidityWhite), main="Volatile acidity in the wine")
 summary(data_winequality_white$volatile.acidity)
 
 ```
+Ook bij het citroenzuur zien we een sterke pierk bij de beginwaarden, en meer rommelige data bij hogere waarden. We zien een tweede, veel kleinere piek rond 225.
 
 ```{r}
 citricAcidWhite <- table(data_winequality_white$citric.acid)
-d <- density(citricAcidWhite)
-plot(d, main="Citric acid in the wine")
+plot(density(citricAcidWhite), main="Citric acid in the wine")
 summary(data_winequality_white$citric.acid)
 ```
+
+Als volgt kijken we naar de suikers in de wijn. Ook hier zien we een piek bij de kleine waarden, direct gevolgd door een tweede piek.
+
 ```{r}
 residualSugarWhite <- table(data_winequality_white$residual.sugar)
-d <- density(residualSugarWhite)
-plot(d, main="Residual sugar in the wine")
+plot(density(residualSugarWhite), main="Residual sugar in the wine")
 summary(data_winequality_white$residual.sugar)
 ```
+
+Het patroon zet zich voort bij de chlorides in de wijnen. Hier is de piek heel scherp.
 
 ```{r}
 chloridesWhite <- table(data_winequality_white$chlorides)
@@ -91,12 +104,18 @@ plot(d, main="Chlorides in the wine")
 summary(data_winequality_white$chlorides)
 ```
 
+Nu kijken we naar het zwaveloxide in de wijnen. Er word een scheiding gemaakt tussen vrije en totale zwaveloxide in de wijnen.
+
+Bij de vrije zwaveloxide zien we een piek aan het begin, en een  verdere uitspreiding naar de hogere waarden. Er is een kleine piek aan het einde van de spreiding bij 100.
+
 ```{r}
 freeSulfurDioxideWhite <- table(data_winequality_white$free.sulfur.dioxide)
 d <- density(freeSulfurDioxideWhite)
 plot(d, main="Free sulfur dioxide in the wine")
 summary(data_winequality_white$free.sulfur.dioxide)
 ```
+
+Bij de totale zwaveloxide in de wijnen zien we een veel breedere verdeling, met een piek hoge piek, en een tweede piek bij de hogere waarden.
 
 ```{r}
 totalSulfurDioxideWhite <- table(data_winequality_white$total.sulfur.dioxide)
@@ -106,12 +125,16 @@ plot(d, main="Total sulfur dioxide in the wine")
 summary(data_winequality_white$total.sulfur.dioxide)
 ```
 
+De dichtheid van de wijn heeft een heel sterke piek bij de lage waarden, rond 3.
+
 ```{r}
 densityWhite <- table(data_winequality_white$density)
 d <- density(densityWhite)
 plot(d, main="Density of the wine")
 summary(data_winequality_white$density)
 ```
+
+De zuur waarden in de wijn heeft een sterke eerste piek, met een breede verdeling.
 
 ```{r}
 phWhite <- table(data_winequality_white$pH)
@@ -120,12 +143,16 @@ plot(d, main="PH vlaue of the wine")
 summary(data_winequality_white$pH)
 ```
 
+De sulfaat waarden in de wijnen hebben 2 pieken.
+
 ```{r}
 sulphatesWhite <- table(data_winequality_white$sulphates)
 d <- density(sulphatesWhite)
 plot(d, main="Sulphate in the wine")
 summary(data_winequality_white$sulphates)
 ```
+Bij de alcohol percentages van de wijnen zien we opnieuw het patroon van een piek bij de lage waarden, en een verdere bredere verdeling.
+
 ```{r}
 alcoholWhite <- table(data_winequality_white$alcohol)
 d <- density(alcoholWhite)
@@ -135,15 +162,18 @@ summary(data_winequality_white$alcohol)
 
 ## Rode wijn
 
--> Doe nu hetzelfde voor de andere dataset. Merk op dat je met beide datasets zal moeten werken. M.a.w.: data-exploratie, data-manipulatie, trainen en testen op beide datasets.
--> Overloop alle variabelen en leg ze uit aan de hand van 1 of 2 zinnen per variabele. Geef iets weer of analyseer indien er belangrijke punten zijn die je wil vermelden.
--> Enzovoort
+
 
 ```{r}
 data_winequality_red <- read.csv("Data - winequality-red.csv", header=TRUE, sep=";") %>% setDT
 head(data_winequality_red)
 
 ```
+Bij de rode wijnen zien we dezelfde patronen opduiken als bij de witte wijnen. 
+
+Ook bij de rode wijnen kijken we eerst naar de kwaliteit.
+Hier zien we opnieuw dat over het algemeen de meeste wijnen vrij gemiddeld scoren. De laagste score blijft 3, maar de hoogste score is 8.
+
 
 ```{r}
 qualityCountRed <- table(data_winequality_red$quality)
@@ -152,6 +182,8 @@ barplot(qualityCountRed, main="Qualtity of red wine",
 summary(data_winequality_red$quality)
 ```
 
+Als we kijken naar het vaste zuur in de wijnen, zien we dat deze relatief breed verspreid is. Ook hier zien we een eerste piek, en een kleinere tweede.
+
 ```{r}
 fixedAcidityRed <- table(data_winequality_red$fixed.acidity)
 d <- density(fixedAcidityRed)
@@ -159,6 +191,7 @@ plot(d, main="Fixed acidity in the red wine")
 summary(data_winequality_red$fixed.acidity)
 
 ```
+De vluchtige zuren hebben ook in de rode wijnen een stevige eerste piek, met een kleinere tweede piek.
 
 ```{r}
 volatileAcidityRed <- table(data_winequality_red$volatile.acidity)
@@ -168,12 +201,17 @@ summary(data_winequality_red$volatile.acidity)
 
 ```
 
+Het citroenzuur is in de rode wijnen zeer breed verdeeld. Hoewel we een piek zien, is deze anders verdeeld, iets breder.
+
 ```{r}
 citricAcidRed <- table(data_winequality_red$citric.acid)
 d <- density(citricAcidRed)
 plot(d, main="Citric acid in the red wine")
 summary(data_winequality_red$citric.acid)
 ```
+
+Bij de suikers zien we bij de rode wijnen een heel stevige piek, met wat ruis bij de hogere waarden.
+
 ```{r}
 residualSugarRed <- table(data_winequality_red$residual.sugar)
 d <- density(residualSugarRed)
@@ -181,12 +219,17 @@ plot(d, main="Residual sugar in the red wine")
 summary(data_winequality_red$residual.sugar)
 ```
 
+De chlorides in de rode wijnen hebben een eerste piek, gevolgd door ruis. In het ruis zijn er twee heuvels.
+
 ```{r}
 chloridesRed <- table(data_winequality_red$chlorides)
 d <- density(chloridesRed)
 plot(d, main="Chlorides in the red wine")
 summary(data_winequality_red$chlorides)
 ```
+Nu kijken we naar de zwaveldioxides.
+
+Bij de vrije zwaveldioxides zien we opnieuw een brede basis. Er is een piek bij de lage waarden.
 
 ```{r}
 freeSulfurDioxideRed <- table(data_winequality_red$free.sulfur.dioxide)
@@ -194,6 +237,7 @@ d <- density(freeSulfurDioxideRed)
 plot(d, main="Free sulfur dioxide in the red wine")
 summary(data_winequality_red$free.sulfur.dioxide)
 ```
+Bij het totale zwaveldioxide zien we de vorm van de vrije zwaveldioxide terugkeren.
 
 ```{r}
 totalSulfurDioxideRed <- table(data_winequality_red$total.sulfur.dioxide)
@@ -230,8 +274,16 @@ plot(d, main="Alcohol percentage of the wine")
 summary(data_winequality_red$alcohol)
 ```
 
+## Correlatie
 
-Analyseerde afhankelijkheid tussen de variabelen door middel van een correlatie matrix en een correlatietabel.
+Hier bekijken we de correlatie tussen de verschillende variabelen.
+
+Bij de rode wijnen zien we een sterke correclatie tussen "vast zuur" en "citroen zuur", alsook tussen "vluchtig zuur" en "citroen zuur". Dit is logisch, want het gaat steeds over zuren.
+Er is een minder sterke correlatie tussen vluchtig en vast zuur. Opnieuw lijkt dit logisch, omdat dit tegenstaande soorten zuur zijn.
+
+Er is sterke correlatie tussen de PH waarden en de verschillende zuren. De PH waarden geven aan hoe sterk een zuur is, dus dit is te verklaren.
+
+De twee zwavel dioxide waarden zijn ook sterk gecoreleerd aan elkaar. Opnieuw is dit logisch, het gaat namelijk over het totaal, en een sub categorie van zwavel dioxide.
 
 ```{r}
 red_wine.cor = cor(data_winequality_red)
@@ -239,41 +291,45 @@ round(red_wine.cor, 2)
 corrplot(red_wine.cor)
 ```
 
+Bij de witte wijnen zien we een sterke correlatie tussen dichtheid en suiker. Daarnaast zijn ook de zwaveldioxide waarden sterk gecoreleerd. Dit met dezelfde reden als bij de rode wijnen.
+
+Dichtheid en alcohol hebben ook een sterke correlatie, die kunnen we niet direct verklaren.
+
 ```{r}
 white_wine.cor = cor(data_winequality_white)
 round(white_wine.cor, 2)
 corrplot(white_wine.cor)
 ```
--> Wat zijn de conclusies uit je bovenstaand matrix en/of tabel?
-
 
 ## Conclusie Data-Exploratie
 
--> Geef een algemene conclusie over je data-exploratie, waarin je reflecteert over de inzichten die je hebt opgedaan, opmerkelijkheden benadrukt en de volgende stappen in het proces beschrijft.<br />
--> Leg ook uit of je iets van data dient te 'manipuleren', (lees: data-manipulatie). Het kan bijvoorbeeld zijn dat er een variabele is met corrupted data of dergelijke. Daarnaast is het belangrijk dat de datatypes van de dataset compatibel zijn met de gebruikte ML algoritmen. Om dit te weten moet je even nadenken over welke 3 ML algoritmen je wil gebruiken voor je voorspelling.
+We zien dat bij beide datasets dezelfde patronen naarboven komen. Steeds een sterke piek bij lage waarden, met wat ruis en een tweede piek bij de hogere waarden. De locatie van de piek, en de ruis schuift wel op tussen rode en witte wijn.
 
-### Witte wijn
-
-We zien een sterke correclatie tussen "fixed acid" en "citric acid", alsook tussen "volatile acidity" en "citric acid". Dit is logisch, er is steeds sprake over soorten zuren in de wijn.
-Er is een minder sterke correlatie tussen "volatile acid" en "fixed acid". 
-
-### Rode Wijn
-
+Bij de correlatie zien we eigenlijk maar 1 echte gelijkenis terug keren. Namelijk de correlatie tussen de zwaveldioxide waarden.
 
 
 # Data-Manipulatie
 
+We kijken of er missende waarden zijn in de dataset van de witte wijnen.
+
 ```{r}
-data_winequality_white <- na.omit(data_winequality_white)
+sum(is.na(data_winequality_white))
+sum(is.null(data_winequality_white))
 ```
+We kijken of er missende waarden zijn in de dataset van de rode wijnen.
+
 ```{r}
-data_winequality_red <- na.omit(data_winequality_red)
+sum(is.na(data_winequality_red))
+sum(is.null(data_winequality_red))
 ```
 
 ## Conclusie Data-Manipulatie
 
+We doen niet aan datamanipulatie in dit project. Zoals hierboven te zien, zijn er geen ontbrekende waarden in de datasets. We zien het dus niet als noodzakelijk om hieraan veranderingen te maken.
 
+Indien er toch ontbrekende waarden waren, hadden we de betreffende rijen uit de tabel kunnen halen met "na.omit" of met een null filter "Filter(Negate(is.null), dataset)".
 
+We zien geen overbodige kolommen in de dataset. Er is geen data aanwezig die gevaar maakt voor een foutieve voorspelling. Daarom hebben we besloten om geen kolommen te verwijderen.
 
 # Leeralgoritmen/Neurale Netwerken
 
@@ -456,6 +512,24 @@ head(prediction_quality_red_rf, margin_of_error = testdata_red_rf$quality - pred
 
 ### Conclusie
 
+We merken op dat het gebruik van de drie verschillende leer algoritmes steeds vrij acurate voorspellingen geeft. Het verschil in de algoritmes zorgt wel voor andere soorten predicties. 
 
+Zo zien we dat het tweede algoritme enkel distincte groepen voorspelt. Dit is meer in lijn met de dataset, waar enkel gehele getallen mogelijk zijn. 
+
+De twee andere algoritmes voorspellen eerder op een schaal. Als we hier drempel waarden zouden voorzien tussen de waarden, kunnen we deze omzetten naar gehele getallen. In dit gevel lijkt het ons de logische keuze om te gaan voor drempel waarden zoals de afrondingsregels. Zo zien we dat ook deze algoritmen steeds een redelijk correct voorspelling hebben.
+
+De keuze voor het algoritme zou op basis van de dataset dus op algoritme 2 moeten vallen. Zoals eerder gezegd is het dus wel mogelijk om de andere datasets te gebruiken met afronding.
 
 ### Bronnen
+
+[1] Gebruik van "Na-omit":
+https://www.statology.org/na-omit-in-r/
+
+[2] Voor onderzoek naar verschillende algoritmes:
+https://www.analyticsvidhya.com/blog/2017/09/common-machine-learning-algorithms/
+
+[3] Info over Random Forest algoritme:
+https://www.geeksforgeeks.org/random-forest-approach-for-regression-in-r-programming/?ref=rp
+
+[4] Info over LDA algoritme:
+https://www.r-bloggers.com/2021/05/linear-discriminant-analysis-in-r/
