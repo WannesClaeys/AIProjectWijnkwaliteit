@@ -39,6 +39,8 @@ Opmerking: als je in de voorbeeldcode 3 puntjes (...) tegenkomt, dan is het de b
 
 # Data-Exploratie
 
+## Wite wijn
+
 ```{r}
 data_winequality_white <- read.csv("Data - winequality-white.csv", header=TRUE, sep=";") %>% setDT
 head(data_winequality_white)
@@ -129,6 +131,8 @@ d <- density(alcoholWhite)
 plot(d, main="Alcohol percentage of the wine")
 summary(data_winequality_white$alcohol)
 ```
+
+## Rode wijn
 
 -> Doe nu hetzelfde voor de andere dataset. Merk op dat je met beide datasets zal moeten werken. M.a.w.: data-exploratie, data-manipulatie, trainen en testen op beide datasets.
 -> Overloop alle variabelen en leg ze uit aan de hand van 1 of 2 zinnen per variabele. Geef iets weer of analyseer indien er belangrijke punten zijn die je wil vermelden.
@@ -247,10 +251,26 @@ corrplot(white_wine.cor)
 -> Geef een algemene conclusie over je data-exploratie, waarin je reflecteert over de inzichten die je hebt opgedaan, opmerkelijkheden benadrukt en de volgende stappen in het proces beschrijft.<br />
 -> Leg ook uit of je iets van data dient te 'manipuleren', (lees: data-manipulatie). Het kan bijvoorbeeld zijn dat er een variabele is met corrupted data of dergelijke. Daarnaast is het belangrijk dat de datatypes van de dataset compatibel zijn met de gebruikte ML algoritmen. Om dit te weten moet je even nadenken over welke 3 ML algoritmen je wil gebruiken voor je voorspelling.
 
+### Witte wijn
+
+We zien een sterke correclatie tussen "fixed acid" en "citric acid", alsook tussen "volatile acidity" en "citric acid". Dit is logisch, er is steeds sprake over soorten zuren in de wijn.
+Er is een minder sterke correlatie tussen "volatile acid" en "fixed acid". 
+
+### Rode Wijn
+
+
+
 # Data-Manipulatie
 
+```{r}
+data_winequality_white <- na.omit(data_winequality_white)
+```
+```{r}
+data_winequality_red <- na.omit(data_winequality_red)
+```
 
 ## Conclusie Data-Manipulatie
+
 
 
 
